@@ -6,7 +6,6 @@
   "use strict";
   var STORAGE_KEY = "python-turtle-code";       // autosaved code (the platform snapshots it)
   var DEFAULT_CODE = "from turtle import *\n\nforward(100)\n";
-  var CANVAS = { width: 480, height: 360 };
 
   var codeEl = document.getElementById("code");
   var runBtn = document.getElementById("run");
@@ -78,9 +77,12 @@
       killableFor: true,
       execLimit: 20000                           // ms; a runaway loop stops the program
     });
+    // The canvases take the panel's size at this moment; a resize applies on
+    // the next run, which is also when the drawing is cleared anyway.
+    var target = document.getElementById("turtle-canvas");
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = "turtle-canvas";
-    Sk.TurtleGraphics.width = CANVAS.width;
-    Sk.TurtleGraphics.height = CANVAS.height;
+    Sk.TurtleGraphics.width = target.clientWidth || 480;
+    Sk.TurtleGraphics.height = target.clientHeight || 360;
     return Sk.misceval.asyncToPromise(function () {
       return Sk.importMainWithBody("<stdin>", false, getCode(), true);
     }).then(function () {

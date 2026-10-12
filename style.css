@@ -12,8 +12,9 @@ button:disabled { opacity:.5; cursor:default }
 .editor, .stage { min-height:0; display:flex; flex-direction:column; gap:.6rem }
 #code { flex:1; width:100%; resize:none; background:#0f2531; color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:.7rem; font:14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size:4 }
 #code:focus { outline:2px solid var(--accent) }
-#turtle-canvas { flex:1; min-height:0; background:#fff; border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center }
-#turtle-canvas canvas { max-width:100%; max-height:100% }
+/* Skulpt stacks two canvases (drawing, sprite) with a negative margin, so this
+   box must stay a plain block and the canvases must not be scaled by CSS. */
+#turtle-canvas { flex:1; min-height:0; background:#fff; border-radius:6px; overflow:hidden; display:block }
 #output { margin:0; height:7rem; overflow:auto; background:#0f2531; border:1px solid var(--line); border-radius:6px; padding:.5rem .7rem; font:13px/1.4 ui-monospace, monospace; white-space:pre-wrap }
 #output.error { border-color:var(--err); color:var(--err) }
 @media (max-width:700px) { .split { grid-template-columns:1fr } #code { min-height:10rem } }
