@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tortue Python</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="title">Tortue Python</span>
+    <button type="button" id="run" title="Ctrl+Entrée">▶ Lancer</button>
+    <button type="button" id="clear" class="quiet">Effacer le dessin</button>
+    <span id="status" class="status">chargement…</span>
+  </header>
+  <main class="split">
+    <section class="editor">
+      <textarea id="code" spellcheck="false" aria-label="Code Python"></textarea>
+    </section>
+    <section class="stage">
+      <div id="turtle-canvas" aria-label="Dessin de la tortue"></div>
+      <pre id="output" aria-live="polite"></pre>
+    </section>
+  </main>
+  <script src="vendor/skulpt.min.js"></script>
+  <script src="vendor/skulpt-stdlib.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
