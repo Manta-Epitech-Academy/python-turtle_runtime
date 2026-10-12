@@ -17,4 +17,11 @@ button:disabled { opacity:.5; cursor:default }
 #turtle-canvas { flex:1; min-height:0; background:#fff; border-radius:6px; overflow:hidden; display:block }
 #output { margin:0; height:7rem; overflow:auto; background:#0f2531; border:1px solid var(--line); border-radius:6px; padding:.5rem .7rem; font:13px/1.4 ui-monospace, monospace; white-space:pre-wrap }
 #output.error { border-color:var(--err); color:var(--err) }
-@media (max-width:700px) { .split { grid-template-columns:1fr } #code { min-height:10rem } }
+/* Narrow (the platform's side pane): one column, editor above the drawing, and
+   the drawing box gets a fixed height so the canvas has a size before the first run. */
+@media (max-width:700px) {
+  .split { grid-template-columns:1fr; grid-template-rows:auto 1fr; overflow:auto }
+  #code { height:12rem; flex:none }
+  #turtle-canvas { flex:none; height:320px }
+  #output { height:5rem }
+}
