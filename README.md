@@ -1,5 +1,5 @@
 > **Runtime `python-turtle`.**
-> `docker pull ghcr.io/kevin-cazal/python-turtle_runtime:latest`: the image is built and
+> `docker pull ghcr.io/manta-epitech-academy/python-turtle_runtime:latest`: the image is built and
 > published by `.github/workflows/` on every push to `main`, and serves the app at
 > `/runtime/python-turtle/latest/`, the path the workshop platform embeds it at.
 > Used by: [tortue_subject](https://github.com/kevin-cazal/tortue_subject).
