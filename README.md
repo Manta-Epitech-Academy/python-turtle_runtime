@@ -1,3 +1,9 @@
+> **Runtime `python-turtle`.**
+> `docker pull ghcr.io/kevin-cazal/python-turtle_runtime:latest`: the image is built and
+> published by `.github/workflows/` on every push to `main`, and serves the app at
+> `/runtime/python-turtle/latest/`, the path the workshop platform embeds it at.
+> Used by: [tortue_subject](https://github.com/kevin-cazal/tortue_subject).
+
 # Tortue Python, a workshop runtime
 
 A one-page Python turtle playground: a code editor, a run button, the drawing, the output.
@@ -24,6 +30,8 @@ index.html        the page
 style.css
 app.js            editor, autosave, Skulpt, the PythonTurtle API
 scripts/vendor.sh fetches the interpreter; vendor/ is gitignored
+Dockerfile        the same site behind nginx, for the cluster (docker/nginx.conf)
+.github/          publishes the image to GHCR and the site to GitHub Pages
 ```
 
 ## The API an adapter uses
