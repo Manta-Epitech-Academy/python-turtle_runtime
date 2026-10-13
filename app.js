@@ -9,7 +9,6 @@
 
   var codeEl = document.getElementById("code");
   var runBtn = document.getElementById("run");
-  var clearBtn = document.getElementById("clear");
   var outEl = document.getElementById("output");
   var statusEl = document.getElementById("status");
   var running = false;
@@ -99,7 +98,6 @@
   }
 
   runBtn.addEventListener("click", run);
-  clearBtn.addEventListener("click", function () { clearDrawing(); outEl.textContent = ""; setStatus("prêt"); });
 
   // --- the small API an adapter can use ------------------------------------
   window.PythonTurtle = {

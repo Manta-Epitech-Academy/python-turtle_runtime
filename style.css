@@ -5,7 +5,6 @@ body { display:flex; flex-direction:column; background:var(--bg); color:var(--fg
 .bar { display:flex; align-items:center; gap:.6rem; padding:.5rem .8rem; background:var(--panel); border-bottom:1px solid var(--line) }
 .title { font-weight:700; margin-right:.6rem }
 button { background:var(--accent); color:#fff; border:0; border-radius:6px; padding:.35rem .8rem; font-weight:600; cursor:pointer }
-button.quiet { background:transparent; border:1px solid var(--line); color:var(--fg); font-weight:500 }
 button:disabled { opacity:.5; cursor:default }
 .status { margin-left:auto; opacity:.7; font-size:.85em }
 .split { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:.6rem; padding:.6rem }
