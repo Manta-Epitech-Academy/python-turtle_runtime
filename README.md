@@ -7,7 +7,13 @@
 # Tortue Python, a workshop runtime
 
 A one-page Python turtle playground: a code editor, a run button, the drawing, the output.
-Python runs in the browser with [Skulpt](https://skulpt.org); nothing is sent anywhere.
+Python runs in the browser with [Skulpt](https://skulpt.org), the editor is
+[Monaco](https://microsoft.github.io/monaco-editor/); nothing is sent anywhere.
+
+Monaco's automatic helpers are off, as in the other workshop runtimes: no closing brackets
+or quotes, no suggestions, no hints, no reformatting, so nothing appears that the participant
+did not type. Add `?helpers` to the address to turn them back on. Tab inserts four spaces,
+Ctrl+Entrée runs the program.
 
 It is a **runtime** for the
 [ctfd-workshop-platform](https://github.com/Manta-Epitech-Academy/ctfd-workshop-platform):
@@ -19,7 +25,7 @@ which is the rule for every runtime.
 ## Run it standalone
 
 ```sh
-scripts/vendor.sh            # fetches Skulpt into vendor/ (once)
+scripts/vendor.sh            # fetches Skulpt and Monaco into vendor/ (once)
 python3 -m http.server 8000  # then open http://localhost:8000/
 ```
 
@@ -28,8 +34,9 @@ python3 -m http.server 8000  # then open http://localhost:8000/
 ```
 index.html        the page
 style.css
-app.js            editor, autosave, Skulpt, the PythonTurtle API
-scripts/vendor.sh fetches the interpreter; vendor/ is gitignored
+editor.js         Monaco, with its helpers off (?helpers turns them on)
+app.js            autosave, Skulpt, the PythonTurtle API
+scripts/vendor.sh fetches Skulpt and Monaco; vendor/ is gitignored
 Dockerfile        the same site behind nginx, for the cluster (docker/nginx.conf)
 .github/          publishes the image to GHCR and the site to GitHub Pages
 ```
@@ -38,7 +45,7 @@ Dockerfile        the same site behind nginx, for the cluster (docker/nginx.conf
 
 | Member | Meaning |
 |---|---|
-| `PythonTurtle.ready` | `true` once the interpreter is loaded; the `python-turtle:ready` event fires then |
+| `PythonTurtle.ready` | `true` once the editor and the interpreter are loaded; `window.PythonTurtle` exists from then on, and the `python-turtle:ready` event fires |
 | `PythonTurtle.storageKey` | the `localStorage` key the code is autosaved under |
 | `PythonTurtle.getCode()`, `setCode(text)` | read or replace the editor |
 | `PythonTurtle.run()` | run the code; resolves when done; `python-turtle:run` fires with `{ok, error?}` |

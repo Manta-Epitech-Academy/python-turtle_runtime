@@ -7,39 +7,28 @@
   var STORAGE_KEY = "python-turtle-code";       // autosaved code (the platform snapshots it)
   var DEFAULT_CODE = "from turtle import *\n\nforward(100)\n";
 
-  var codeEl = document.getElementById("code");
+  var hostEl = document.getElementById("code");
   var runBtn = document.getElementById("run");
   var outEl = document.getElementById("output");
   var statusEl = document.getElementById("status");
   var running = false;
+  var editor = null;                             // Monaco, once loaded
 
   // --- editor -------------------------------------------------------------
-  function getCode() { return codeEl.value; }
+  function getCode() { return editor ? editor.getValue() : ""; }
   function setCode(text) {
-    codeEl.value = text == null ? "" : String(text);
+    if (editor) editor.setValue(text == null ? "" : String(text));
     save();
   }
   function save() {
-    try { localStorage.setItem(STORAGE_KEY, codeEl.value); } catch (e) { /* storage may be unavailable */ }
+    if (!editor) return;
+    try { localStorage.setItem(STORAGE_KEY, editor.getValue()); } catch (e) { /* storage may be unavailable */ }
   }
-  function restore() {
+  function savedCode() {
     var saved = null;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-    codeEl.value = saved != null ? saved : DEFAULT_CODE;
+    return saved != null ? saved : DEFAULT_CODE;
   }
-  codeEl.addEventListener("input", save);
-  codeEl.addEventListener("keydown", function (ev) {
-    if (ev.key === "Tab") {                      // a Tab inserts four spaces
-      ev.preventDefault();
-      var s = codeEl.selectionStart, e = codeEl.selectionEnd;
-      codeEl.value = codeEl.value.slice(0, s) + "    " + codeEl.value.slice(e);
-      codeEl.selectionStart = codeEl.selectionEnd = s + 4;
-      save();
-    } else if (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey)) {
-      ev.preventDefault();
-      run();
-    }
-  });
 
   // --- Skulpt -------------------------------------------------------------
   function builtinRead(x) {
@@ -100,20 +89,32 @@
   runBtn.addEventListener("click", run);
 
   // --- the small API an adapter can use ------------------------------------
-  window.PythonTurtle = {
-    ready: typeof Sk !== "undefined",
-    storageKey: STORAGE_KEY,
-    getCode: getCode,
-    setCode: setCode,
-    run: run,
-    focus: function () { codeEl.focus({ preventScroll: true }); }
-  };
-
-  restore();
-  if (window.PythonTurtle.ready) {
+  // Published once the editor and the interpreter are both usable: an adapter
+  // that finds no `PythonTurtle` waits for the `python-turtle:ready` event.
+  function publish() {
+    window.PythonTurtle = {
+      ready: true,
+      storageKey: STORAGE_KEY,
+      getCode: getCode,
+      setCode: setCode,
+      run: run,
+      focus: function () { editor.focus(); }
+    };
     setStatus("prêt");
     document.dispatchEvent(new CustomEvent("python-turtle:ready"));
-  } else {
-    setStatus("Skulpt introuvable : lance scripts/vendor.sh", true);
   }
+
+  if (typeof Sk === "undefined") {
+    setStatus("Skulpt introuvable : lance scripts/vendor.sh", true);
+    return;
+  }
+  window.initTurtleEditor(hostEl, savedCode()).then(function (ed) {
+    editor = ed;
+    editor.onDidChangeModelContent(save);
+    // Ctrl+Entrée (Cmd+Entrée on a Mac) runs the program, as the button says.
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, run);
+    publish();
+  }, function (err) {
+    setStatus(err.message, true);
+  });
 })();

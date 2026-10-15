@@ -14,15 +14,17 @@
   </header>
   <main class="split">
     <section class="editor">
-      <textarea id="code" spellcheck="false" aria-label="Code Python"></textarea>
+      <div id="code" aria-label="Code Python"></div>
     </section>
     <section class="stage">
       <div id="turtle-canvas" aria-label="Dessin de la tortue"></div>
       <pre id="output" aria-live="polite"></pre>
     </section>
   </main>
+  <script src="vendor/monaco/vs/loader.js"></script>
   <script src="vendor/skulpt.min.js"></script>
   <script src="vendor/skulpt-stdlib.js"></script>
+  <script src="editor.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
