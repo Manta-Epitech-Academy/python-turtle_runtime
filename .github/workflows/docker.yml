@@ -108,3 +108,45 @@ jobs:
           set -euo pipefail
           kubectl rollout restart deploy/python-turtle-runtime -n ctfd-runtimes
           kubectl rollout status deploy/python-turtle-runtime -n ctfd-runtimes --timeout=300s
+
+  # The dist in the runtimes bucket, which the workshop platform's proxy serves
+  # at /runtime/python-turtle/<version>/ (ctfd-workshop-platform docs/DEPLOY.md,
+  # "Runtimes in the bucket"). Two prefixes: the short sha subjects pin,
+  # immutable, and `latest`, the build of main. Independent of the image job:
+  # the image is for the cluster's Services, the bucket is for the proxy, and
+  # the second does not wait for the first. Skips with a notice until the
+  # RUNTIMES_S3_* variables and secrets exist on the organisation.
+  bucket:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      # No bundler: the repo is the site, URLs are relative. Fetch Skulpt and
+      # Monaco the way the image does, then keep only what the page loads
+      # (the same list the Dockerfile removes).
+      - run: sh scripts/vendor.sh
+      - run: |
+          rsync -a --exclude-from=- ./ dist/ <<'EXCLUDE'
+          .git
+          .github
+          scripts
+          README.md
+          Dockerfile
+          .dockerignore
+          docker
+          dist
+          EXCLUDE
+      - name: Upload to the runtimes bucket
+        uses: Manta-Epitech-Academy/ctfd-workshop-platform/.github/actions/upload-runtime@main
+        with:
+          runtime-id: python-turtle
+          version: ${{ steps.sha.outputs.short }}
+          dist: dist
+          latest-dist: dist
+          endpoint: ${{ vars.RUNTIMES_S3_ENDPOINT }}
+          bucket: ${{ vars.RUNTIMES_S3_BUCKET }}
+          region: ${{ vars.RUNTIMES_S3_REGION }}
+          access-key-id: ${{ secrets.RUNTIMES_S3_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.RUNTIMES_S3_SECRET_ACCESS_KEY }}
